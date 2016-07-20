@@ -8,16 +8,25 @@ function get_properties() {
     return $statement;
 }
 
-//function get_properties_by_categories($category_id) {
-//    
-//}
+function get_properties_by_categories($category_id) {
+    global $db;
+    $query = 'SELECT * FROM property
+              WHERE property.categoryID = :categoryID
+              ORDER BY propertyID';
+    $statement = $db->prepare($query);
+    $statement->bindValue(":categoryID", $category_id);
+    $statement->execute();
+    $properties = $statement->fetchAll();
+    $statement->closeCursor();
+    return $properties;
+}
 
 function get_property($property_id) {
     global $db;
     $query = 'SELECT * FROM property
-              WHERE propertyID = :property_id';
+              WHERE propertyID = :propertyID';
     $statement = $db->prepare($query);
-    $statement->bindValue(":property_id", $property_id);
+    $statement->bindValue(":propertyID", $property_id);
     $statement->execute();
     $property = $statement->fetch();
     $statement->closeCursor();
