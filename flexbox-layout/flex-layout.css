@@ -1,0 +1,315 @@
+/*
+ Use: Flexbox Layout for screened devices
+ Created on : March 14, 2015
+ Author     : Blaine Robertson
+    
+ Three Resources mentioned in the video:
+ 1. http://css-tricks.com/snippets/css/a-guide-to-flexbox/ - A Guide to Flexbox
+ 2. http://css-tricks.com/using-flexbox/ - overview of required vendor prefixes
+ 3. http://jsbin.com/gufoko/quiet - adds vendor prefixes for multiple browsers
+
+This file styles using a "mobile first" approach, which means the default styles 
+are universal and size-wise intended for mobile devices. Then, using media 
+queries, changes the layout for larger screens.
+*/
+
+/* This imports the normalize css file to make all browser styles equal */
+@import url('normalize.css');
+
+/* Change the box model to border box on all elements */
+*{
+ box-sizing: border-box;
+}
+
+/* Set the height and width to html and body to 100% */
+html,body{
+ height: 100%;
+ width: 100%;
+}
+
+/* Set general rules for body */
+body{
+ font-family: Arial, Helvetica, sans-serif;
+ font-size: 16px;
+ font-size: 1em;
+ padding: 0;
+ margin: 0;
+ background-color: #FFFACD; /* Subdued yellow */
+ color: #333; /* Dark Gray color */
+}
+
+/* Remove default list marker, margin and padding from these lists */
+ul,ol{
+ list-style: none;
+ margin: 0;
+ padding: 0;
+}
+
+/* Control images sizes */
+img{
+ max-width: 100%;
+}
+
+/* ****  From this point we control element sizes and layout for screen display  **** */
+
+h1{
+ font-size: 8vw; /* Roughly 8% of the screen width */
+}
+
+h2{
+ font-size: 6vw; /* Roughly 6% of the screen width */
+}
+
+h3,h4,h5,h6{
+ font-size: 1em; /* Same size as text */
+}
+
+/* Control overall size and behavior with the body element's inner-div' */
+body>div{
+ position: relative; 
+ display: -webkit-box; 
+ display: -webkit-flex; 
+ display: -ms-flexbox; 
+ display: flex;
+ -webkit-flex-flow: column nowrap;
+     -ms-flex-flow: column nowrap;
+         flex-flow: column nowrap;
+}
+
+/* Set all elements with ARIA landmarks as flex boxes */
+[role]{
+ padding: 0 .625em; /* 16px / 10px = .625em  padding to left and right sides */
+ -webkit-box-flex: 1;
+ -webkit-flex: 1;
+     -ms-flex: 1;
+         flex: 1;
+}
+
+/* Style the banner inner-div */ 
+[role=banner]>div{
+ background-color: #fff;
+ text-align: center;
+ display: -webkit-box;
+ display: -webkit-flex;
+ display: -ms-flexbox;
+ display: flex;
+ flex-align: row nowrap;
+}
+
+/* Style the site logo */
+[role=banner] img{
+ display: none; /* Hide logo on small screens */
+}
+
+/* Style the site heading */
+[role=banner] h1{
+ -webkit-box-flex: 1;
+ -webkit-flex: 1;
+     -ms-flex: 1;
+         flex: 1; /* h1 takes the entire line */
+}
+
+/* Style the page navigation and its descendants*/
+[role=navigation]{
+ background-color: #ccc;
+ padding: 0;
+ width: 100%;
+ position: fixed;
+ bottom: 0; 
+}
+
+/* Style the navigation unordered list */
+[role=navigation] ul{
+ display: -webkit-box;
+ display: -webkit-flex;
+ display: -ms-flexbox;
+ display: flex;
+ -webkit-flex-flow: row nowrap;
+     -ms-flex-flow: row nowrap;
+         flex-flow: row nowrap;
+ -webkit-box-pack: start;
+ -webkit-justify-content: flex-start;
+     -ms-flex-pack: start;
+         justify-content: flex-start;
+}
+
+/* Style the navigation list items */
+[role=navigation] li{
+ text-align: center;
+ border: 1px solid #000; /* Remove when done, just to see li's */
+ display: -webkit-box;
+ display: -webkit-flex;
+ display: -ms-flexbox;
+ display: flex;
+ -webkit-box-flex: 1;
+ -webkit-flex: 1;
+     -ms-flex: 1;
+         flex: 1;
+}
+
+/* Style the navigation anchors */
+[role=navigation] a{
+ line-height: 40px; /* Helps finger tips have room to click links */
+ -webkit-box-flex: 1;
+ -webkit-flex: 1;
+     -ms-flex: 1;
+         flex: 1;
+}
+
+/* Style the aside inner-div */
+[role=complementary]>div{
+ background-color: #fff;
+}
+
+/*Style the main element inner-div*/
+[role=main]>div{
+ background-color: #fff;
+}
+
+/* Style the footer and its descendants*/
+[role=contentinfo]{
+ font-size: .8em; /* .8em = 12.8px */
+ background-color: #ccc;
+}
+
+/* Style the footer inner-div */
+[role=contentinfo]>div{
+ padding-bottom: 5em;
+}
+
+/* Style the footer's unordered list' */
+[role=contentinfo] ul{
+ display: -webkit-box;
+ display: -webkit-flex;
+ display: -ms-flexbox;
+ display: flex;
+ -webkit-flex-flow: row wrap;
+     -ms-flex-flow: row wrap;
+         flex-flow: row wrap;
+ -webkit-box-pack: start;
+ -webkit-justify-content: flex-start;
+     -ms-flex-pack: start;
+         justify-content: flex-start;
+}
+
+/* Style list items in the footer */
+[role=contentinfo] li{
+ text-align: center;
+ display: -webkit-box;
+ display: -webkit-flex;
+ display: -ms-flexbox;
+ display: flex;
+ -webkit-box-flex: 0;
+ -webkit-flex: 0 1 auto;
+     -ms-flex: 0 1 auto;
+         flex: 0 1 auto;
+}
+
+/* Style anchors in the footer */
+[role=contentinfo] a{
+ line-height: 40px; /* space for finger tips to click */
+ min-width: 40px;  /* space for finger tips to click */
+ -webkit-box-flex: 1;
+ -webkit-flex: 1;
+     -ms-flex: 1;
+         flex: 1;
+}
+
+/* Change the layout for screens larger than 700 pixels */
+@media screen and (min-width: 43.75em){ /* 700px equivelent and larger */
+ h1{
+  font-size: 2em; /* Roughly 32px */
+ }
+
+ h2{
+  font-size: 1.5em; /* Roughly 24px */
+ }
+
+ /* Style the banner inner-div */ 
+ [role=banner]>div{
+  text-align: left;
+ }
+
+ [role=banner] img{
+  display: inline;
+ }
+
+ nav[role]{
+  position: relative;
+ }
+
+ nav[role]>div{
+  padding: 0 .625em; /* 16px / 10px = .625em  padding to left and right sides */
+ }
+
+ nav[role] li{
+  -webkit-box-flex: 0;
+  -webkit-flex: 0 0 10%;
+      -ms-flex: 0 0 10%;
+          flex: 0 0 10%;
+ }
+
+ footer[role]>div{
+  padding-bottom: 0;
+ }
+
+ body>div{
+  -webkit-flex-flow: row wrap;
+      -ms-flex-flow: row wrap;
+          flex-flow: row wrap;
+  -webkit-box-pack: start;
+  -webkit-justify-content: flex-start;
+      -ms-flex-pack: start;
+          justify-content: flex-start;
+ }
+
+ /*Style all elements with roles to be flex children and 100% wide*/
+ *[role]{
+  -webkit-box-flex: 1;
+  -webkit-flex: 1 100%;
+      -ms-flex: 1 100%;
+          flex: 1 100%;
+ }
+
+ /*Set the aside to get 1 share of the row and to become 3rd to be shown*/
+ aside[role]{
+  -webkit-box-flex: 1;
+  -webkit-flex: 1;
+      -ms-flex: 1;
+          flex: 1;
+  -webkit-box-ordinal-group: 4;
+  -webkit-order: 4;
+      -ms-flex-order: 4;
+          order: 4;
+ }
+
+ /*Set the main to get 4 shares of the row and to become 4th to be shown*/
+ main[role]{
+  -webkit-box-flex: 5;
+  -webkit-flex: 5;
+      -ms-flex: 5;
+          flex: 5;
+  -webkit-box-ordinal-group: 3;
+  -webkit-order: 3;
+      -ms-flex-order: 3;
+          order: 3;
+ }
+
+ /* Set the footer to become 5th to be shown, placing it below the aside and main, which now set side by side and share a row */
+ footer[role]{
+  -webkit-box-ordinal-group: 5;
+  -webkit-order: 5;
+      -ms-flex-order: 5;
+          order: 5;
+ }
+}
+
+/* Change the layout for screens larger than 1300 pixels */
+@media screen and (min-width: 81.25em){ /* 1300px equivelent and larger */
+
+ body>div{
+  width: 90vw;
+  margin: 0 auto;
+  font-size: 2vw;
+ }
+}
