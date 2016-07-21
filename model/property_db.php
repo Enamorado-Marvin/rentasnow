@@ -44,20 +44,20 @@ function delete_property($property_id) {
 }
 
 function add_property($category_id, $propertyName, $address, $city_id, $state, $zipCode, $numberOfBeds, $numberOfBaths, $propertyPrice, 
-                      $propertySquareMeters, $propertyDetails) {
+                      $propertySquareMeters, $propertyDetails, $propertyPhone, $user_id) {
     global $db;
 //    $password = sha1($email . $password);
     $query = 'INSERT INTO property
-                 (categoryID, propertyName, address, cityID, state, zipCode, numberOfBeds, numberOfBaths, propertyPrice, 
-                  propertySquareMeters, propertyDetails)
+                 (categoryID, propertyName, address, adressID, state, zipCode, numberOfBeds, numberOfBaths, propertyPrice, 
+                  propertySquareMeters, propertyDetails, propertyPhone, userID)
               VALUES
-                 (:categoryID, :propertyName, :address, :cityID, :state, :zipCode, :numberOfBeds, :numberOfBaths, :propertyPrice,
-                  :propertySquareMeters, :propertyDetails)';
+                 (:categoryID, :propertyName, :address, :adressID, :state, :zipCode, :numberOfBeds, :numberOfBaths, :propertyPrice,
+                  :propertySquareMeters, :propertyDetails, :propertyPhone, :userID)';
     $statement = $db->prepare($query);
     $statement->bindValue(':categoryID', $category_id);
     $statement->bindValue(':propertyName', $propertyName);
-    $statement->bindValue(':addess', $address);
-    $statement->bindValue(':cityID', $city_id);
+    $statement->bindValue(':address', $address);
+    $statement->bindValue(':adressID', $city_id);
     $statement->bindValue(':state', $state);
     $statement->bindValue(':zipCode', $zipCode);
     $statement->bindValue(':numberOfBeds', $numberOfBeds);
@@ -65,6 +65,8 @@ function add_property($category_id, $propertyName, $address, $city_id, $state, $
     $statement->bindValue(':propertyPrice', $propertyPrice);
     $statement->bindValue(':propertySquareMeters', $propertySquareMeters);
     $statement->bindValue(':propertyDetails', $propertyDetails);
+    $statement->bindValue(':propertyPhone', $propertyPhone);
+    $statement->bindValue(':userID', $user_id);
 //    $statement->bindValue(':images', $images);
     $statement->execute();
     $statement->closeCursor();
