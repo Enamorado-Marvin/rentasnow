@@ -4,34 +4,66 @@ require('../model/user_db.php');
 require ('../model/property_db.php');
 require ('../model/category_db.php');
 require ('../model/city_db.php');
+require_once ('../util/main.php');
+require_once ('../util/tags.php');
+require_once ('../upload/file_util.php');  // the get_file_list function
+require_once ('../upload/image_util.php'); // the process_image function
 
-// image code
-//require_once 'file_util.php';  // the get_file_list function
-//require_once 'image_util.php'; // the process_image function
+/**
+ * Function processes files for upload
+ * 1) checks if there are any files to upload
+ * 2) loops through each image to move the original image into the image directory and processes derivatives of each image
+ * 
+ * returns array $images
+**/
+function upload_files() {
+	$images = array();
+	// check to make sure there are files
+	if (isset($_FILES)) {
+		// print_r($_FILES);
+		// rearrange the files array to make it digestable
+		$files = reArrayFiles($_FILES['file']);
+		// print_r($files);
+		// exit();
+		// loop through the files
+		foreach($files as $file) {
+			// set the filename to the name of the file
+			$filename = $file['name'];
+			// if the filename is not empty
+			if (!empty($filename)) {
+				$source = $file['tmp_name'];
+				$target = IMAGE_APP_DIR . $filename;
+				move_uploaded_file($source, $target);
+				
+				// create the '400', '250', and '100' versions of the image
+				$images[$filename] = process_image(IMAGE_APP_DIR, $filename);
+			}		
+		}		
+	} else {
+            // do nothing
+	}	
 
-//$image_dir = 'images';
-//$image_dir_path = getcwd() . DIRECTORY_SEPARATOR . $image_dir;
-//
-//echo $image_dir_path;
-//exit();
-//
-//function upload_file($name) {
-//    global $image_dir_path;
-//    if (isset($_FILES[$name])) {
-//        $filename = $_FILES[$name]['name'];
-//        if (empty($filename)) {
-//            return;
-//        }
-//        $source = $_FILES[$name]['tmp_name'];
-//        $target = $image_dir_path . DIRECTORY_SEPARATOR . $filename;
-//        move_uploaded_file($source, $target);
-//
-//        // create the '400', '250', and '100' versions of the image
-//        process_image($image_dir_path, $filename);
-//		
-//		return $target;
-//    }
-//}
+	return $images;	
+}
+
+/**
+ * Function reprocesses $_FILES array for easier handling
+ * 
+ * returns array $file_ary
+**/
+function reArrayFiles(&$file_post) {
+
+    $file_ary = array();
+    $file_count = count($file_post['name']);
+    $file_keys = array_keys($file_post);
+
+    for ($i=0; $i<$file_count; $i++) {
+        foreach ($file_keys as $key) {
+            $file_ary[$i][$key] = $file_post[$key][$i];
+        }
+    }	
+    return $file_ary;
+}
 
 // Set session
 if(!isset($_SESSION['user'])) {
@@ -136,7 +168,7 @@ switch ($action) {
         $category_id = filter_input(INPUT_POST, 'categoryID', FILTER_VALIDATE_INT);
         $propertyName = filter_input(INPUT_POST, 'propertyName');
         $address = filter_input(INPUT_POST, 'address');
-        $adress_id = filter_input(INPUT_POST, 'adressID');
+        $city_id = filter_input(INPUT_POST, 'adressID', FILTER_VALIDATE_INT);
         $state = filter_input(INPUT_POST, 'state');
         $zipCode = filter_input(INPUT_POST, 'zipCode');
         $propertyDetails = filter_input(INPUT_POST, 'propertyDetails');
@@ -145,16 +177,23 @@ switch ($action) {
         $propertyPhone = filter_input(INPUT_POST, 'propertyPhone');
         $propertyPrice = filter_input(INPUT_POST, 'propertyPrice', FILTER_VALIDATE_FLOAT);
         $propertySquareMeters = filter_input(INPUT_POST, 'propertySquareMeters', FILTER_VALIDATE_INT);
+        $user_id = filter_input(INPUT_POST, 'userID', FILTER_VALIDATE_INT);
+        
+        // process images and serialize for storage
+		$images = serialize(upload_files());
+                
         if ($category_id == NULL || $category_id == false || $propertyName == NULL || $address == null || 
-            $adress_id == NULL || $state == NULL || $zipCode == null || $zipCode == false || $propertyDetails == null 
+            $city_id == NULL || $city_id == false || $state == NULL || $zipCode == null || $zipCode == false || $propertyDetails == null 
             || $numberOfBeds == null || $numberOfBeds == false || $numberOfBaths == FALSE || $numberOfBaths == null
             || $propertyPhone == null || $propertyPrice == null || $propertyPrice == false || $propertySquareMeters == null
-            || $propertySquareMeters == false) {
+            || $propertySquareMeters == false || $user_id == null || $user_id == false) {
             $error = "Invalid data. Check all fields and try again.";
             include('../errors/error.php');
         } else {
-            add_property($category_id, $propertyName, $address, $adress_id, $state, $zipCode, $numberOfBeds, $numberOfBaths, $propertyPrice, $propertySquareMeters, $propertyDetails);
-            include 'add-property.php';
+            $categories = get_categories();
+            $propertyID = add_property($category_id, $propertyName, $address, $city_id, $state, $zipCode, $numberOfBeds, $numberOfBaths, $propertyPrice, $propertySquareMeters, $propertyDetails, $propertyPhone, $user_id, $images);
+            $property = get_property($property_id);
+            include '../modules/property_view.php';
         }
         
         break;

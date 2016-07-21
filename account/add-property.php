@@ -62,8 +62,27 @@ and open the template in the editor.
                             <input type="text" name="zipCode"><br/>
                         </div>
                         <div class="col span_3_of_12">
-<!--                            <label>Upload Your Photo</label><br/>
-                            <input type="file" name="file"><br/>-->
+                            <label>Upload Your Photo</label><br/>
+<!--                            <input type="file" name="file"><br/>-->
+                            <?php 
+				// check if images are there
+				if (isset($images) && $images != NULL) {
+					foreach ($images as $image) { 
+						// explode original filename to get the name, without the extension for the image ID and image title
+						$image_id = explode('.', $image['original']);
+			?>
+						<div id="<?php echo $image_id[0]; ?>" >
+							<!-- remember to keep the original image name for saving purposes -->
+							<input type="hidden" name="files_uploaded[]" value="<?php echo $image['original']; ?>"><br>
+							<!-- display the 100px thumbnail -->
+							<img src="<?php echo IMAGE_SITE_DIR . $image['100']; ?>"
+							alt="<?php echo IMAGE_SITE_DIR . $image['100']; ?>"> <a href="#" title="<?php echo $image_id[0]; ?>">
+							<img src="../../upload/delete.png" alt="Delete"></a>
+						</div>
+			<?php	
+					}
+				}
+			?>
                         </div>
                     </div>
                     <div class="group">
@@ -109,6 +128,7 @@ and open the template in the editor.
                             <input type="text" name="propertySquareMeters" required="required" /><br />
                             <br/>
                         </div>
+                        <input type="hidden" name="userID" value="<?php echo $_SESSION['user']['userID'] ; ?>" />
                     </div>
                     <div class="group">
                         <input type="submit" value="Submit Property" class="button col span_3_of_12"><br />
